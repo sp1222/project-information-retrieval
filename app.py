@@ -54,7 +54,7 @@ def init_lyrics_index(name):
 # add to index
 def add_docs_to_lyrics_index(idx, name):
     # Rank, Song, Artist, Year, Lyrics, Source
-    f = open(name + '.csv', 'r')
+    f = open(name + '.csv', 'r', encoding='utf8', errors='ignore')
     reader = csv.DictReader(f)
     writer = idx.writer()
     i = 0
