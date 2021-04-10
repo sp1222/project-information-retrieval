@@ -30,14 +30,6 @@ class hit_object:
         self.dictionary = dictionary
 
 # *****************************************************************************************
-# add to index
-def init_dirs(name):
-    if not os.path.exists(name + '_dir'):
-        os.mkdir(name + '_dir')
-        return False
-    return True
-
-# *****************************************************************************************
 # init schema
 def init_schema():
     return Schema(path=ID(unique=True, stored=True), content=TEXT(stored=True))
@@ -56,6 +48,11 @@ def init_index(name):
     return whoosh_index.create_in(name + '_dir', schema=init_schema())
 
 # *****************************************************************************************
+# init lyrics index
+def init_lyrics_index(name):
+    return whoosh_index.create_in(name + '_dir', schema=init_lyrics_schema())
+
+# *****************************************************************************************
 # add to index
 def add_docs_to_lyrics_index(idx, name):
     # Rank, Song, Artist, Year, Lyrics, Source
@@ -69,7 +66,7 @@ def add_docs_to_lyrics_index(idx, name):
             writer.add_document(id=str(i), rank=str(row['Rank']), song=row['Song'], artist=row['Artist'],
                                 year=str(row['Year']),
                                 lyrics=row['Lyrics'] if row['Lyrics'] != 'NA' else '',
-                                source=row['Source'] if row['Source'] != 'NA' else '0')
+                                source=str(row['Source']) if row['Source'] != 'NA' else '0')
         except:
             print('An error occurred at the following row in the file.')
             print(row['Rank'] + '\t' + row['Song'] + '\t' + row['Artist'] + '\t' + row['Year'] + '\t' + row['Lyrics']
@@ -200,7 +197,8 @@ if __name__ == '__main__':
     # initialize indices if they do not already exist for each .csv file.
     # make it so that i don't have to rebuild these every single time..
     for name in list(fileNames.keys()):
-        if not init_dirs(name):
-            idx = init_index(name)
-            add_docs_to_lyrics_index(idx, name)
+      if not os.path.exists(name + '_dir'):
+          os.mkdir(name + '_dir')
+          idx = init_lyrics_index(name)
+          add_docs_to_lyrics_index(idx, name)
     app.run(debug=True)
