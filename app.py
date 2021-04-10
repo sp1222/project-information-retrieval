@@ -199,4 +199,4 @@ if __name__ == '__main__':
           os.mkdir(name + '_dir')
           idx = init_lyrics_index(name)
           add_docs_to_lyrics_index(idx, name)
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port='8080')
