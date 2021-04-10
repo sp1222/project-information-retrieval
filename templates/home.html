@@ -2,7 +2,7 @@
 {% block title %} Information Retrieval Project {% endblock %}
 {% block header %} <h1>Information Retrieval Project</h1> {% endblock %}
 {% block actions %}
-    <p>Type a keyword to search for locally or in select websites via Google.</p>
+    <p>Type a keyword to search for locally or via Google API.</p>
     <form  method="post">
         <p><input type="search" value="" name="keyword" />
             <label for=files>Select File to Search: </label>
@@ -32,21 +32,24 @@
         <!-- be it a search result locally or via Google. -->
         {% if medium == "Google" %}
             {% for r in results %}
-                <a href={{ r['formattedUrl'] }} target="_blank">{{ r['title'] }}</a>
-                <p>{{ r['snippet'] }}</p>
+                <hr class="dotted">
+                <p>
+                    <a href={{ r['formattedUrl'] }} target="_blank"><img src={{ r['pagemap']['cse_thumbnail'][0]['src'] }} width=200 }} height=100 />   {{ r['htmlTitle']|safe }}</a>
+                </p>
+                <p>{{ r['displayLink'] }}</p>
+                <p>{{ r['htmlSnippet']|safe }}</p>
             {% endfor %}
         {% endif %}
         {% if medium == "Locally" %}
             <p>Note: for multifield search, 'artist' field gets a field_boost = 2.0</p>
             {% for r in results %}
-                <a href="{{ url_for('lyrics', song=r.dictionary['song'], lyrics=r.dictionary['lyrics']) }}"
-                   target="_blank">
+                <hr class="dotted">
+                <p style="font-size:20px"><a href="{{ url_for('lyrics', song=r.dictionary['song'], lyrics=r.dictionary['lyrics']) }}"
+                         target="_blank">
                     {{ r.dictionary['song'] }}
-                </a>
-                <div>Artist:  {{ r.dictionary['artist'] }}</div>
-                <div>Year:    {{ r.dictionary['year'] }}</div>
-                <div>Rank:    {{ r.rank }}</div>
-                <div>Score:   {{ '%.3f'|format(r.score) }}</div>
+                </a></p>
+                <p>{{ r.dictionary['song'] }} -- {{ r.dictionary['artist'] }} -- {{ r.dictionary['year'] }}</p>
+                <p>Ranked at {{ r.rank }} with a score of {{ '%.3f'|format(r.score) }}</p>
                 <p>{{ r.snippet|safe }}</p>
             {% endfor %}
         {% endif %}

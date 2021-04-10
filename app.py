@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from flask import Flask, render_template, request, redirect, url_for
 from googleapiclient.discovery import build
 from whoosh.fields import SchemaClass, Schema, TEXT, ID, NUMERIC
@@ -6,7 +5,6 @@ import whoosh.index as whoosh_index
 from whoosh.qparser import QueryParser
 from whoosh.qparser import MultifieldParser
 import csv
-import json
 import os
 
 app = Flask(__name__)
@@ -30,7 +28,7 @@ class hit_object:
         self.dictionary = dictionary
 
 # *****************************************************************************************
-# init schema
+# init schema, generic blank
 def init_schema():
     return Schema(path=ID(unique=True, stored=True), content=TEXT(stored=True))
 
@@ -107,7 +105,7 @@ def multifield_search_query(idx, word, fields=[]):
 
 # *****************************************************************************************
 # run simple query using the keyword entered.
-def simple_search_query(idx, word, field=''):  # parameter indicating which field to search maybe?
+def simple_search_query(idx, word, field=''):
     limit = 10
     highlight_char_Max = 0
     res = []
@@ -158,6 +156,7 @@ def lyrics(song, lyrics):
 # host home
 @app.route('/', methods=['POST', 'GET'])
 def home():
+    # dictionary of search types with their respective function calls.
     scoring_methods = {'BM25F Multifield': multifield_search_query,
                        'BM25F Singlefield': simple_search_query}
     if request.method == 'POST':
@@ -170,7 +169,6 @@ def home():
                 medium = 'Locally'
 
                 search_index = whoosh_index.open_dir(file + '_dir')
-                #            results = simple_search_query(search_index, keyword, 'lyrics')
                 results = scoring_methods[score_method](search_index, keyword, fileNames[file][score_method])
 
                 return render_template('home.html', keyword=keyword, medium=medium, results=results,
