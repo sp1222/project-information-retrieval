@@ -34,7 +34,11 @@
             {% for r in results %}
                 <hr class="dotted">
                 <p>
-                    <a href={{ r['formattedUrl'] }} target="_blank"><img src={{ r['pagemap']['cse_thumbnail'][0]['src'] }} width=200 }} height=100 />   {{ r['htmlTitle']|safe }}</a>
+                    {%  if r['pagemap']['cse_thumbnail'] %}
+                        <a href={{ r['formattedUrl'] }} target="_blank"><img src={{ r['pagemap']['cse_thumbnail'][0]['src'] }} width=200 }} height=100 />   {{ r['htmlTitle']|safe }}</a>
+                    {% else %}
+                        <a href={{ r['formattedUrl'] }} target="_blank">{{ r['htmlTitle']|safe }}</a>
+                    {% endif %}
                 </p>
                 <p>{{ r['displayLink'] }}</p>
                 <p>{{ r['htmlSnippet']|safe }}</p>
