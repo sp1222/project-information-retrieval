@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{{ beer_info['beer'] }}</h1>
+{% endblock %}
+{% block results %}
+    <p>{{ beer_info['style'] }} has an IBU range of {{ beer_info['minibu'] }} {{ beer_info['maxibu'] }}</p>
+    <p>{{ beer_info['brewery'] }}</p>
+    <p>Average Rating {{ beer_info['style'] }} -- ABV {{ beer_info['abv'] }}</p>
+    <hr class="dotted">
+    {% if beer_info['description']|length > 10 %}
+        <p>{{ beer_info['description'] }}</p>
+    {% else %}
+        <p>No Notes are available to present for this beer at this point in time.</p>
+    {% endif %}
+
+{% endblock %}
