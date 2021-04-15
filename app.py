@@ -10,8 +10,8 @@ import whoosh.index as whoosh_index
 
 app = Flask(__name__)
 app.secret_key = "D4T4 M!n!ng"
-api_key = "AIzaSyBRsn6JVdq6-Jbk-AbM2YncKA9ji3DTvQA"
-cse_key = "81d96764a1dfab385"
+api_key = "api key here"
+cse_key = "cse key here"
 fileNames = {'lyrics':
                  {'BM25F Multifield': ['artist', 'lyrics', 'song'],
                   'BM25F Singlefield': 'lyrics'},
