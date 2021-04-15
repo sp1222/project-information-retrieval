@@ -263,7 +263,7 @@ def home():
 # Init __name__
 if __name__ == '__main__':
     # initialize indices if they do not already exist for each .csv file.
-    # make it so that i don't have to rebuild these every single time..
+    # made it so that i don't have to rebuild these every single time..
     index_schema_functions = {'lyrics': init_lyrics_schema,
                               'beer': init_beer_schema,
                               'grocery': init_grocery_schema
