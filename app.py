@@ -161,7 +161,7 @@ def multifield_search_query(idx, word, fields=[]):
 
 
 # *****************************************************************************************
-# run simple query using the keyword entered.
+# run simple query using the keyword entered for a single field
 def simple_search_query(idx, word, field=''):
     limit = 25
     res = []
