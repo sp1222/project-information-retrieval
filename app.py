@@ -252,7 +252,7 @@ def home():
                 search_index = whoosh_index.open_dir(os.getcwd() + '\\indices\\' + file + '_dir')
                 results = scoring_methods[score_method](search_index, keyword, fileNames[file][score_method])
                 global results_global
-                results_global = results
+                results_global = results['items']
 
                 return render_template('home.html', keyword=keyword, medium=medium, results=results,
                                        files=list(fileNames.keys()), scoring_methods=list(scoring_methods.keys()),
