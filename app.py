@@ -283,3 +283,9 @@ if __name__ == '__main__':
             index = init_index(name, index_schema_functions[name])
             index_add_doc_functions[name](index, name)
     app.run(debug=True)
+    
+    
+
+#    Note, for repl.it, all back double slashes "\\" need to change to single forward slashes "/"
+#    app.run(debug=True) changes to app.run(host='0.0.0.0', port='8080')
+
