@@ -27,7 +27,7 @@
         <p>Search for something!</p>
     {% else %}
         <p>Search Results for {{ keyword }}</p>
-        <p>Showing {{ results|length }} results</p>
+        <p>Showing {{ results['items']|length }} results</p>
         <p>Search Time: {{ results['searchTime'] }} seconds</p>
         <p>Total Result: {{ results['totalResults'] }}</p>
         <!-- iterate through list of objects found in the search -->
@@ -47,10 +47,9 @@
             {% endfor %}
         {% endif %}
         {% if medium == "Locally" %}
-
             {% if file == 'lyrics' %}
                 <p>Note: for multifield search, 'artist' field gets a field_boost = 2.0</p>
-                {% for r in results %}
+                {% for r in results['items'] %}
                     <hr class="dotted">
                     <p style="font-size:20px"><a href="{{ url_for('lyrics', rank=r['rank'], song=r.dictionary['song']) }}"
                              target="_blank">
@@ -64,7 +63,7 @@
 
             {% if file == 'beer' %}
                 <p>Note: for multifield search, 'brewery' field gets a field_boost = 2.0</p>
-                {% for r in results %}
+                {% for r in results['items'] %}
                     <hr class="dotted">
                     <p style="font-size:20px"><a href="{{ url_for('beer', rank=r['rank'], beer=r.dictionary['beer']) }}"
                              target="_blank">
@@ -78,7 +77,7 @@
 
             {% if file == 'grocery' %}
                 <p>Note: for multifield search, 'brand' field gets a field_boost = 2.0</p>
-                {% for r in results %}
+                {% for r in results['items'] %}
                     <hr class="dotted">
                     <p style="font-size:20px"><a href="{{ url_for('grocery', rank=r['rank'], product=r.dictionary['product']) }}"
                              target="_blank">
