@@ -184,6 +184,11 @@ def web_search(k, **kwargs):
         service = build("customsearch", "v1", developerKey=api_key)
         r = service.cse().list(q=k, cx=cse_key, **kwargs).execute()
         return r['items']  # returns a dictionary of items
+        d = {}
+        d['searchTime'] = r['searchInformation']['searchTime']
+        d['totalResults'] = r['searchInformation']['formattedTotalResults']
+        d['items'] = r['items']
+        return d
     return None
 
 
