@@ -142,14 +142,15 @@ def init_index(name, function):
 # *****************************************************************************************
 # run multifield query using the keyword entered.
 def multifield_search_query(idx, word, fields=[]):
-    limit = 25
+    limit = 10000
     highlight_Max = 1
-    res = []
+    d = {}
     qp = MultifieldParser(fields, idx.schema)
     q = qp.parse(word)
 
     with idx.searcher() as searcher:
         result = searcher.search(q, limit=limit)
+        res = []
         for hit in result:
             highlight = ''
             for field in fields:
@@ -157,24 +158,31 @@ def multifield_search_query(idx, word, fields=[]):
                     highlight += hit.highlights(field, top=highlight_Max) + ' ... '
             res.append(hit_object(rank=hit.rank, docnum=hit.docnum, score=hit.score, snippet=highlight
                                   , dictionary=hit.fields()))
-    return res
+        d['searchTime'] = result.runtime
+        d['totalResults'] = result.scored_length()
+        d['items'] = res
+    return d
 
 
 # *****************************************************************************************
-# run simple query using the keyword entered for a single field
+# run simple query using the keyword entered.
 def simple_search_query(idx, word, field=''):
-    limit = 25
-    res = []
+    limit = 10000
+    d = {}
     qp = QueryParser(field, schema=idx.schema)
     q = qp.parse(word)
 
     with idx.searcher() as searcher:
         result = searcher.search(q, limit=limit)
+        res = []
         for hit in result:
             res.append(
                 hit_object(rank=hit.rank, docnum=hit.docnum, score=hit.score, snippet=hit.highlights(field, top=3)
                            , dictionary=hit.fields()))
-    return res
+        d['searchTime'] = result.runtime
+        d['totalResults'] = result.scored_length()
+        d['items'] = res
+    return d
 
 
 # *****************************************************************************************
