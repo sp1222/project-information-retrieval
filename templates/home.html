@@ -28,10 +28,12 @@
     {% else %}
         <p>Search Results for {{ keyword }}</p>
         <p>Showing {{ results|length }} results</p>
+        <p>Search Time: {{ results['searchTime'] }} seconds</p>
+        <p>Total Result: {{ results['totalResults'] }}</p>
         <!-- iterate through list of objects found in the search -->
         <!-- be it a search result locally or via Google. -->
         {% if medium == "Google" %}
-            {% for r in results %}
+            {% for r in results['items'] %}
                 <hr class="dotted">
                 <p>
                     {%  if r['pagemap']['cse_thumbnail'] %}
