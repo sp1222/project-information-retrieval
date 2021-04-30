@@ -36,7 +36,7 @@
             {% for r in results['items'] %}
                 <hr class="dotted">
                 <p>
-                    {%  if r['pagemap']['cse_thumbnail'] %}
+                    {%  if r['pagemap'] and r['pagemap']['cse_thumbnail'] %}
                         <a href={{ r['formattedUrl'] }} target="_blank"><img src={{ r['pagemap']['cse_thumbnail'][0]['src'] }} width=200 }} height=100 />   {{ r['htmlTitle']|safe }}</a>
                     {% else %}
                         <a href={{ r['formattedUrl'] }} target="_blank">{{ r['htmlTitle']|safe }}</a>
