@@ -9,7 +9,7 @@ import os
 import whoosh.index as whoosh_index
 
 app = Flask(__name__)
-app.secret_key = "D4T4 M!n!ng"
+app.secret_key = "secret key here"
 api_key = "api key here"
 cse_key = "cse key here"
 fileNames = {'lyrics':
