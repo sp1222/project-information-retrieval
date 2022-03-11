@@ -1,6 +1,6 @@
 # project-information-retrieval
 Intro to Data Mining class project.  Implement a Google API, and conduct word searches using Whoosh on files.
-Launched on repl.it, the project can be observed here:
+Launched on repl.it, the project can be observed here (please note repl needs to wake up and may take time to launch):
 
 https://project-information-retrieval.sp1222.repl.co/
 
