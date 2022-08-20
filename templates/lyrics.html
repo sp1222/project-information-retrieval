@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block header %}
+    <h1>{{ song_info['song'] }}</h1>
+{% endblock %}
+{% block results %}
+    <p>{{ song_info['artist'] }}</p>
+    <p>Ranked {{ song_info['rank'] }} for the year {{ song_info['year'] }}</p>
+    <hr class="dotted">
+    <p>{{ song_info['lyrics'] }}</p>
+{% endblock %}

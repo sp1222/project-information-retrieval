@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %} Information Retrieval Project {% endblock %}
+{% block header %} <h1>Information Retrieval Project</h1> {% endblock %}
+{% block actions %}
+    <p>Type a keyword to search for locally or via Google API.</p>
+    <form  method="post">
+        <p><input type="search" value="" name="keyword" />
+            <label for=files>Select File to Search: </label>
+            <select name="file">
+                {% for file in files %}
+                    <option value="{{ file }}">{{ file }}</option>
+                {% endfor %}
+            </select>
+            <label for=scoring_methods>Select Scoring Method for Search: </label>
+            <select name="score_method">
+                {% for score_method in scoring_methods %}
+                    <option value="{{ score_method }}">{{ score_method }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p><input type="submit" value="Search Locally" name="button"/></p>
+        <p><input type="submit" value="Search Google" name="button"/></p>
+    </form>
+{% endblock %}
+{% block results %}
+    {% if not keyword %}
+        <p>Search for something!</p>
+    {% else %}
+        <p>Search Results for {{ keyword }}</p>
+        <p>Showing {{ results['items']|length }} results</p>
+        <p>Search Time: {{ results['searchTime'] }} seconds</p>
+        <p>Total Result: {{ results['totalResults'] }}</p>
+        <!-- iterate through list of objects found in the search -->
+        <!-- be it a search result locally or via Google. -->
+        {% if medium == "Google" %}
+            {% for r in results['items'] %}
+                <hr class="dotted">
+                <p>
+                    {%  if r['pagemap'] and r['pagemap']['cse_thumbnail'] %}
+                        <a href={{ r['formattedUrl'] }} target="_blank"><img src={{ r['pagemap']['cse_thumbnail'][0]['src'] }} width=200 }} height=100 />   {{ r['htmlTitle']|safe }}</a>
+                    {% else %}
+                        <a href={{ r['formattedUrl'] }} target="_blank">{{ r['htmlTitle']|safe }}</a>
+                    {% endif %}
+                </p>
+                <p>{{ r['displayLink'] }}</p>
+                <p>{{ r['htmlSnippet']|safe }}</p>
+            {% endfor %}
+        {% endif %}
+        {% if medium == "Locally" %}
+            {% if file == 'lyrics' %}
+                <p>Note: for multifield search, 'artist' field gets a field_boost = 2.0</p>
+                {% for r in results['items'] %}
+                    <hr class="dotted">
+                    <p style="font-size:20px"><a href="{{ url_for('lyrics', rank=r['rank'], song=r.dictionary['song']) }}"
+                             target="_blank">
+                        {{ r.dictionary['song'] }}
+                    </a></p>
+                    <p>{{ r.dictionary['song'] }} -- {{ r.dictionary['artist'] }} -- {{ r.dictionary['year'] }}</p>
+                    <p>Ranked at {{ r.rank }} with a score of {{ '%.3f'|format(r.score) }}</p>
+                    <p>{{ r.snippet|safe }}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% if file == 'beer' %}
+                <p>Note: for multifield search, 'brewery' field gets a field_boost = 2.0</p>
+                {% for r in results['items'] %}
+                    <hr class="dotted">
+                    <p style="font-size:20px"><a href="{{ url_for('beer', rank=r['rank'], beer=r.dictionary['beer']) }}"
+                             target="_blank">
+                        {{ r.dictionary['beer'] }}
+                    </a></p>
+                    <p>Average Rating {{ r.dictionary['rating'] }} -- {{ r.dictionary['style'] }} -- {{ r.dictionary['brewery'] }}</p>
+                    <p>Ranked at {{ r.rank }} with a score of {{ '%.3f'|format(r.score) }}</p>
+                    <p>{{ r.snippet|safe }}</p>
+                {% endfor %}
+            {% endif %}
+
+            {% if file == 'grocery' %}
+                <p>Note: for multifield search, 'brand' field gets a field_boost = 2.0</p>
+                {% for r in results['items'] %}
+                    <hr class="dotted">
+                    <p style="font-size:20px"><a href="{{ url_for('grocery', rank=r['rank'], product=r.dictionary['product']) }}"
+                             target="_blank">
+                        {{ r.dictionary['product'] }}
+                    </a></p>
+                    <p>{{ r.dictionary['category'] }} -- {{ r.dictionary['brand'] }}</p>
+                    <p>{{ r.dictionary['variant_price'] }} -- {{ r.dictionary['variant_uom'] }}</p>
+                    <p>Ranked at {{ r.rank }} with a score of {{ '%.3f'|format(r.score) }}</p>
+                    <p>{{ r.snippet|safe }}</p>
+                {% endfor %}
+            {% endif %}
+
+        {% endif %}
+    {% endif %}
+{% endblock %}
