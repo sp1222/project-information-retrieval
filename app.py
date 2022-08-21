@@ -223,7 +223,7 @@ def web_search(k, **kwargs):
     return None
 
 
-@app.route('/lyrics/<rank>=<song>/')
+@app.route('/pri/lyrics/<rank>=<song>/')
 def lyrics(rank, song):
     '''
     lyrics page
@@ -236,7 +236,7 @@ def lyrics(rank, song):
     return render_template('lyrics.html', song_info=song_info)
 
 
-@app.route('/beer/<rank>=<beer>/')
+@app.route('/pri/beer/<rank>=<beer>/')
 def beer(rank, beer):
     '''
     beer page
@@ -249,7 +249,7 @@ def beer(rank, beer):
     return render_template('beer.html', beer_info=beer_info)
 
 
-@app.route('/grocery/<rank>=<product>/')
+@app.route('/pri/grocery/<rank>=<product>/')
 def grocery(rank, product):
     '''
     grocery page
@@ -262,7 +262,7 @@ def grocery(rank, product):
     return render_template('grocery.html', product_info=product_info)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/pri', methods=['POST', 'GET'])
 def home():
     '''
     home page
