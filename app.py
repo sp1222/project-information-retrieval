@@ -82,7 +82,7 @@ def add_docs_to_lyrics_index(idx, name):
     :param name: name of file we are writing from
     '''
     # Rank, Song, Artist, Year, Lyrics, Source
-    f = open(os.getcwd() + '\\files\\' + name + '.csv', 'r', encoding='utf8', errors='ignore')
+    f = open(os.getcwd() + '/files/' + name + '.csv', 'r', encoding='utf8', errors='ignore')
     reader = csv.DictReader(f)
     writer = idx.writer()
     id = -1
@@ -108,7 +108,7 @@ def add_docs_to_beer_index(idx, name):
     :param idx: index we are writing to
     :param name: name of file we are writing from
     '''
-    f = open(os.getcwd() + '\\files\\' + name + '.csv', 'r', encoding='utf8', errors='ignore')
+    f = open(os.getcwd() + '/files/' + name + '.csv', 'r', encoding='utf8', errors='ignore')
     reader = csv.DictReader((line.replace('\0', '') for line in f), delimiter = ',')
     writer = idx.writer()
     id = -1
@@ -128,7 +128,7 @@ def add_docs_to_grocery_index(idx, name):
     :param idx: index we are writing to
     :param name: name of file we are writing from
     '''
-    f = open(os.getcwd() + '\\files\\' + name + '.csv', 'r', newline='', encoding='utf-8-sig', errors='ignore')
+    f = open(os.getcwd() + '/files/' + name + '.csv', 'r', newline='', encoding='utf-8-sig', errors='ignore')
     reader = csv.DictReader((line.replace('\0', '') for line in f), delimiter = ',', dialect='excel')
     writer = idx.writer()
     id = -1
@@ -149,7 +149,7 @@ def init_index(name, function):
     :param function: function called for the schema we are looking to index with
     :return: whoosh index
     '''
-    return whoosh_index.create_in(os.getcwd() + '\\indices\\' + name + '_dir', schema=function())
+    return whoosh_index.create_in(os.getcwd() + '/indices/' + name + '_dir', schema=function())
 
 
 def multifield_search_query(idx, word, fields=[]):
@@ -281,7 +281,7 @@ def home():
                 file = request.form['file']
                 score_method = request.form['score_method']
                 medium = 'Locally'
-                search_index = whoosh_index.open_dir(os.getcwd() + '\\indices\\' + file + '_dir')
+                search_index = whoosh_index.open_dir(os.getcwd() + '/indices/' + file + '_dir')
                 results = scoring_methods[score_method](search_index, keyword, FILE_NAMES[file][score_method])
                 global results_global
                 results_global = results['items']
@@ -313,14 +313,8 @@ if __name__ == '__main__':
     # made it so that i don't have to rebuild these every single time..
     for name in list(FILE_NAMES.keys()):
         print('initializing '+ name + ' index')
-        if not os.path.exists(os.getcwd() + '\\indices\\' + name + '_dir'):
-            os.mkdir(os.getcwd() + '\\indices\\' + name + '_dir')
+        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
+            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
             index = init_index(name, index_schema_functions[name])
             index_add_doc_functions[name](index, name)
     app.run(debug=True, host='0.0.0.0', port=5000)
-    
-    
-
-#    Note, for repl.it, all back double slashes "\\" need to change to single forward slashes "/"
-#    app.run(debug=True) changes to app.run(host='0.0.0.0', port='8080')
-
