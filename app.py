@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from googleapiclient.discovery import build
-from whoosh import scoring
 from whoosh.fields import Schema, TEXT, ID, NUMERIC
 from whoosh.qparser import QueryParser
 from whoosh.qparser import MultifieldParser
@@ -189,7 +188,7 @@ def web_search(k, **kwargs):
     return None
 
 
-@app.route('/pri/lyrics/<rank>=<song>/')
+@app.route('/lyrics/<rank>=<song>/')
 def lyrics(rank, song):
     '''
     lyrics page
@@ -202,7 +201,7 @@ def lyrics(rank, song):
     return render_template('lyrics.html', song_info=song_info)
 
 
-@app.route('/pri/beer/<rank>=<beer>/')
+@app.route('/beer/<rank>=<beer>/')
 def beer(rank, beer):
     '''
     beer page
@@ -215,7 +214,7 @@ def beer(rank, beer):
     return render_template('beer.html', beer_info=beer_info)
 
 
-@app.route('/pri', methods=['POST', 'GET'])
+@app.route('/', methods=['POST', 'GET'])
 def home():
     '''
     home page
@@ -263,7 +262,7 @@ if __name__ == '__main__':
                                }
     # made it so that i don't have to rebuild these every single time..
     for name in list(FILE_NAMES.keys()):
-        print('initializing ' + name + ' index')
+        print('Initializing ' + name + ' index')
         if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
             os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
             index = init_index(name, index_schema_functions[name])
