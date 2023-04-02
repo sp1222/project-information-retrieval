@@ -9,18 +9,14 @@ import csv
 import os
 import whoosh.index as whoosh_index
 
-
 app = Flask(__name__)
 FILE_NAMES = {'lyrics':
-                 {'BM25F Multifield': ['artist', 'lyrics', 'song'],
-                  'BM25F Singlefield': 'lyrics'},
-                          'beer':
-                              {'BM25F Multifield': ['beer', 'style', 'brewery', 'description'],
-                               'BM25F Singlefield': 'beer'},
-                          'grocery':
-                              {'BM25F Multifield': ['product', 'brand', 'category', 'parent_category'],
-                               'BM25F Singlefield': 'product'}
-             }
+                  {'BM25F Multifield': ['artist', 'lyrics', 'song'],
+                   'BM25F Singlefield': 'lyrics'},
+              'beer':
+                  {'BM25F Multifield': ['beer', 'style', 'brewery', 'description'],
+                   'BM25F Singlefield': 'beer'}
+              }
 results_global = []
 LOCAL_LIMIT = 1000
 HIGHLIGHT_MAX = 1
@@ -34,6 +30,7 @@ class hit_object:
     '''
     hit object class
     '''
+
     def __init__(self, rank, docnum, score, snippet, dictionary):
         self.rank = rank
         self.docnum = docnum
@@ -62,17 +59,6 @@ def init_beer_schema():
                   style=TEXT(stored=True), brewery=TEXT(field_boost=2.0, stored=True),
                   description=TEXT(stored=True), rating=NUMERIC(float, stored=True),
                   abv=NUMERIC(float, stored=True), minibu=NUMERIC(stored=True), maxibu=NUMERIC(stored=True))
-
-
-def init_grocery_schema():
-    '''
-    init grocery schema
-    :return: Schema for grocery
-    '''
-    return Schema(id=ID(unique=True, stored=True), product=TEXT(stored=True),
-                  variant_price=NUMERIC(float, stored=True), variant_uom=TEXT(stored=True),
-                  variant_alt_price=NUMERIC(float, stored=True), variant_alt_uom=TEXT(stored=True),
-                  brand=TEXT(field_boost=2.0, stored=True), category=TEXT(stored=True), parent_category=TEXT(stored=True))
 
 
 def add_docs_to_lyrics_index(idx, name):
@@ -109,7 +95,7 @@ def add_docs_to_beer_index(idx, name):
     :param name: name of file we are writing from
     '''
     f = open(os.getcwd() + '/files/' + name + '.csv', 'r', encoding='utf8', errors='ignore')
-    reader = csv.DictReader((line.replace('\0', '') for line in f), delimiter = ',')
+    reader = csv.DictReader((line.replace('\0', '') for line in f), delimiter=',')
     writer = idx.writer()
     id = -1
     for row in reader:
@@ -118,26 +104,6 @@ def add_docs_to_beer_index(idx, name):
                             description=row['Description'],
                             rating=str(float(row['Rating'])), abv=str(float(row['ABV'])), minibu=str(row['Min IBU']),
                             maxibu=str(row['Max IBU']))
-    f.close()
-    writer.commit()
-
-
-def add_docs_to_grocery_index(idx, name):
-    '''
-    add to grocery index
-    :param idx: index we are writing to
-    :param name: name of file we are writing from
-    '''
-    f = open(os.getcwd() + '/files/' + name + '.csv', 'r', newline='', encoding='utf-8-sig', errors='ignore')
-    reader = csv.DictReader((line.replace('\0', '') for line in f), delimiter = ',', dialect='excel')
-    writer = idx.writer()
-    id = -1
-    for row in reader:
-        id += 1
-        writer.add_document(id=str(id), product=row['Name'],
-              variant_price=str(float(row['Variant Price'])), variant_uom=row['Variant UOM'],
-              variant_alt_price=str(float(row['Variant Alt Price'])), variant_alt_uom=row['Variant Alt UOM'],
-              brand=row['Brand'], category=row['Category'], parent_category=row['Parent Category'])
     f.close()
     writer.commit()
 
@@ -249,19 +215,6 @@ def beer(rank, beer):
     return render_template('beer.html', beer_info=beer_info)
 
 
-@app.route('/pri/grocery/<rank>=<product>/')
-def grocery(rank, product):
-    '''
-    grocery page
-    :param rank: rank of the search result
-    :param grocery: grocery returned at given ranking
-    :return: html template to render
-    '''
-    global results_global
-    product_info = results_global[int(rank)].dictionary
-    return render_template('grocery.html', product_info=product_info)
-
-
 @app.route('/pri', methods=['POST', 'GET'])
 def home():
     '''
@@ -303,16 +256,14 @@ if __name__ == '__main__':
     configure()
     # initialize indices if they do not already exist for each .csv file.
     index_schema_functions = {'lyrics': init_lyrics_schema,
-                              'beer': init_beer_schema,
-                              'grocery': init_grocery_schema
+                              'beer': init_beer_schema
                               }
     index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
-                               'beer': add_docs_to_beer_index,
-                               'grocery': add_docs_to_grocery_index
+                               'beer': add_docs_to_beer_index
                                }
     # made it so that i don't have to rebuild these every single time..
     for name in list(FILE_NAMES.keys()):
-        print('initializing '+ name + ' index')
+        print('initializing ' + name + ' index')
         if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
             os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
             index = init_index(name, index_schema_functions[name])

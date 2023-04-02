@@ -2,3 +2,4 @@
 .idea
 .replit
 indices/*
+.venv/
