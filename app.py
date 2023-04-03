@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from googleapiclient.discovery import build
+from waitress import serve
 from whoosh.fields import Schema, TEXT, ID, NUMERIC
 from whoosh.qparser import QueryParser
 from whoosh.qparser import MultifieldParser
@@ -22,7 +23,23 @@ HIGHLIGHT_MAX = 1
 
 
 def configure():
+    print('Getting Config')
     load_dotenv()
+
+
+def init():
+    index_schema_functions = {'lyrics': init_lyrics_schema,
+                              'beer': init_beer_schema
+                              }
+    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
+                               'beer': add_docs_to_beer_index
+                               }
+    for name in list(FILE_NAMES.keys()):
+        print('Initializing ' + name + ' index')
+        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
+            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
+            index = init_index(name, index_schema_functions[name])
+            index_add_doc_functions[name](index, name)
 
 
 class hit_object:
@@ -251,20 +268,7 @@ def home():
 
 
 if __name__ == '__main__':
-    print('Getting Config')
     configure()
-    # initialize indices if they do not already exist for each .csv file.
-    index_schema_functions = {'lyrics': init_lyrics_schema,
-                              'beer': init_beer_schema
-                              }
-    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
-                               'beer': add_docs_to_beer_index
-                               }
-    # made it so that i don't have to rebuild these every single time..
-    for name in list(FILE_NAMES.keys()):
-        print('Initializing ' + name + ' index')
-        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
-            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
-            index = init_index(name, index_schema_functions[name])
-            index_add_doc_functions[name](index, name)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    init()
+    print('Serving app')
+    serve(app, host='0.0.0.0', port=5000)
