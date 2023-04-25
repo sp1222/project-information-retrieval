@@ -2,19 +2,6 @@ version: 2.1
 
 # Define the jobs we want to run for this project
 jobs:
-  test:
-    docker:
-        - image: cimg/python:3.10.9
-    steps:
-      - checkout
-      - run: |
-          cd ~/
-          git clone https://github.com/sp1222/my-website.git
-          cd ~/my-website
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-#          python3 -m pytest
   deploy:
     docker:
       - image: cimg/base:2022.06
@@ -28,22 +15,19 @@ jobs:
           docker_layer_caching: true
       - run: |
           TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -t $DOCKERUSER/my-website:$TAG .
-          docker build -t $DOCKERUSER/my-website:latest .
+          docker build -t $DOCKERUSER/project-information-retrieval:$TAG .
+          docker build -t $DOCKERUSER/project-information-retrieval:latest .
           echo $DOCKERPASS | docker login -u $DOCKERUSER --password-stdin
-          docker push $DOCKERUSER/my-website:$TAG
-          docker push $DOCKERUSER/my-website:latest
-#      - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP -p $PORT "./my-website/deploy.sh"
+          docker push $DOCKERUSER/project-information-retrieval:$TAG
+          docker push $DOCKERUSER/project-information-retrieval:latest
+      - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP -p $PORT "./project-information-retrieval/deploy.sh"
 
 # Orchestrate our job run sequence
 workflows:
   version: 2
   test-deploy:
     jobs:
-#      - test
       - deploy:
-#          requires:
-#            - test
           filters:
             branches:
               only:
