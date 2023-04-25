@@ -25,7 +25,7 @@ jobs:
 # Orchestrate our job run sequence
 workflows:
   version: 2
-  test-deploy:
+  deploy:
     jobs:
       - deploy:
           filters:
