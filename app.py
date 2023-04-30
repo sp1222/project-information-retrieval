@@ -191,6 +191,7 @@ def create_app():
         '''
         if k:
             service = build("customsearch", "v1", developerKey=os.getenv('api_key'))
+            print(os.getenv('cse_key'))
             r = service.cse().list(q=k, cx=os.getenv('cse_key'), **kwargs).execute()
             d = {}
             d['searchTime'] = r['searchInformation']['searchTime']
