@@ -234,7 +234,7 @@ def create_app():
                            'BM25F Singlefield': simple_search_query}
         if request.method == 'POST':
             keyword = request.form['keyword']
-            if keyword is not None and keyword.isspace == False and keyword != '':
+            if keyword is not None or keyword.isspace == False or keyword != '':
                 medium = str()
                 results = list()
                 file = str()
