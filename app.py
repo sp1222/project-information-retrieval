@@ -246,6 +246,9 @@ def create_app():
     index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
                                'beer': add_docs_to_beer_index
                                }
+
+    if not os.path.exists(os.getcwd() + '/indices'):
+        os.mkdir(os.getcwd() + '/indices')
     for name in list(FILE_NAMES.keys()):
         print('Initializing ' + name + ' index')
         if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
