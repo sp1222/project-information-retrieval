@@ -22,23 +22,20 @@ def create_app():
     LOCAL_LIMIT = 1000
     HIGHLIGHT_MAX = 1
 
-    def configure():
-        print('Getting Config')
-        load_dotenv()
+    load_dotenv()
 
-    def init():
-        index_schema_functions = {'lyrics': init_lyrics_schema,
-                                  'beer': init_beer_schema
-                                  }
-        index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
-                                   'beer': add_docs_to_beer_index
-                                   }
-        for name in list(FILE_NAMES.keys()):
-            print('Initializing ' + name + ' index')
-            if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
-                os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
-                index = init_index(name, index_schema_functions[name])
-                index_add_doc_functions[name](index, name)
+    index_schema_functions = {'lyrics': init_lyrics_schema,
+                              'beer': init_beer_schema
+                              }
+    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
+                               'beer': add_docs_to_beer_index
+                               }
+    for name in list(FILE_NAMES.keys()):
+        print('Initializing ' + name + ' index')
+        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
+            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
+            index = init_index(name, index_schema_functions[name])
+            index_add_doc_functions[name](index, name)
 
     class hit_object:
         '''
