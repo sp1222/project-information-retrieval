@@ -23,6 +23,26 @@ def create_app():
     HIGHLIGHT_MAX = 1
 
     load_dotenv()
+
+
+    def init():
+        index_schema_functions = {'lyrics': init_lyrics_schema,
+                                  'beer': init_beer_schema
+                                  }
+        index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
+                                   'beer': add_docs_to_beer_index
+                                   }
+
+        if not os.path.exists(os.getcwd() + '/indices'):
+            os.mkdir(os.getcwd() + '/indices')
+        for name in list(FILE_NAMES.keys()):
+            print('Initializing ' + name + ' index')
+            if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
+                os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
+                index = init_index(name, index_schema_functions[name])
+                index_add_doc_functions[name](index, name)
+
+
     class hit_object:
         '''
         hit object class
@@ -214,7 +234,7 @@ def create_app():
                            'BM25F Singlefield': simple_search_query}
         if request.method == 'POST':
             keyword = request.form['keyword']
-            if keyword is not None or keyword.isspace == False or keyword != '':
+            if keyword is not None and keyword.isspace == False and keyword != '':
                 medium = str()
                 results = list()
                 file = str()
@@ -239,27 +259,11 @@ def create_app():
                                files=list(FILE_NAMES.keys()), scoring_methods=list(scoring_methods.keys()), file='')
 
 
-
-    index_schema_functions = {'lyrics': init_lyrics_schema,
-                              'beer': init_beer_schema
-                              }
-    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
-                               'beer': add_docs_to_beer_index
-                               }
-
-    if not os.path.exists(os.getcwd() + '/indices'):
-        os.mkdir(os.getcwd() + '/indices')
-    for name in list(FILE_NAMES.keys()):
-        print('Initializing ' + name + ' index')
-        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
-            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
-            index = init_index(name, index_schema_functions[name])
-            index_add_doc_functions[name](index, name)
-
+    init()
     return app
 
-app = Flask(__name__)
 
+app = Flask(__name__)
 if __name__ == '__main__':
     from waitress import serve
     print('Serving app')
