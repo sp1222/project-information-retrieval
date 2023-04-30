@@ -23,20 +23,6 @@ def create_app():
     HIGHLIGHT_MAX = 1
 
     load_dotenv()
-
-    index_schema_functions = {'lyrics': init_lyrics_schema,
-                              'beer': init_beer_schema
-                              }
-    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
-                               'beer': add_docs_to_beer_index
-                               }
-    for name in list(FILE_NAMES.keys()):
-        print('Initializing ' + name + ' index')
-        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
-            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
-            index = init_index(name, index_schema_functions[name])
-            index_add_doc_functions[name](index, name)
-
     class hit_object:
         '''
         hit object class
@@ -251,6 +237,21 @@ def create_app():
 
         return render_template('home.html', keyword='', medium='', results=[],
                                files=list(FILE_NAMES.keys()), scoring_methods=list(scoring_methods.keys()), file='')
+
+
+
+    index_schema_functions = {'lyrics': init_lyrics_schema,
+                              'beer': init_beer_schema
+                              }
+    index_add_doc_functions = {'lyrics': add_docs_to_lyrics_index,
+                               'beer': add_docs_to_beer_index
+                               }
+    for name in list(FILE_NAMES.keys()):
+        print('Initializing ' + name + ' index')
+        if not os.path.exists(os.getcwd() + '/indices/' + name + '_dir'):
+            os.mkdir(os.getcwd() + '/indices/' + name + '_dir')
+            index = init_index(name, index_schema_functions[name])
+            index_add_doc_functions[name](index, name)
 
     return app
 
