@@ -179,7 +179,7 @@ def create_app():
             return d
         return None
 
-    @app.route('/project/information-retrieval/lyrics/<rank>=<song>/')
+    @app.route('/lyrics/<rank>=<song>/')
     def lyrics(rank, song):
         '''
         lyrics page
@@ -191,7 +191,7 @@ def create_app():
         song_info = results_global[int(rank)].dictionary
         return render_template('lyrics.html', song_info=song_info)
 
-    @app.route('/project/information-retrieval/beer/<rank>=<beer>/')
+    @app.route('/beer/<rank>=<beer>/')
     def beer(rank, beer):
         '''
         beer page
@@ -203,7 +203,7 @@ def create_app():
         beer_info = results_global[int(rank)].dictionary
         return render_template('beer.html', beer_info=beer_info)
 
-    @app.route('/project/information-retrieval', methods=['POST', 'GET'])
+    @app.route('/', methods=['POST', 'GET'])
     def home():
         '''
         home page
