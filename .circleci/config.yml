@@ -27,7 +27,7 @@ jobs:
           echo $DOCKERPASS | docker login -u $DOCKERUSER --password-stdin
           docker push $DOCKERUSER/project-information-retrieval:$TAG
           docker push $DOCKERUSER/project-information-retrieval:latest
-      - run: sudo tailscale ssh $USER@$TAILNET_IP -p $TAILNET_PORT "./my-tracker/deploy.sh"
+      - run: sudo tailscale ssh $USER@$TAILNET_IP -p $TAILNET_PORT "./project-information-retrieval/deploy.sh"
       - tailscale/disconnect
 
 # Orchestrate our job run sequence
