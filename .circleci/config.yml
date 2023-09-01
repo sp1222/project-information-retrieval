@@ -9,6 +9,10 @@ jobs:
           username: $DOCKERUSER
           password: $DOCKERPASS
     steps:
+      - tailscale/install
+      - tailscale/connect:
+          ts-auth-key: TAILNET_LATEST
+          ts-dst-host: 100.88.29.63
       - checkout
       - setup_remote_docker:
           version: 20.10.18
@@ -20,7 +24,8 @@ jobs:
           echo $DOCKERPASS | docker login -u $DOCKERUSER --password-stdin
           docker push $DOCKERUSER/project-information-retrieval:$TAG
           docker push $DOCKERUSER/project-information-retrieval:latest
-      - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP -p $PORT "./project-information-retrieval/deploy.sh"
+      - run: sudo tailscale ssh $USER@$TAILNET_IP -p $TAILNET_PORT "./my-tracker/deploy.sh"
+      - tailscale/disconnect
 
 # Orchestrate our job run sequence
 workflows:
