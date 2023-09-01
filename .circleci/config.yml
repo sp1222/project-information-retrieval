@@ -1,5 +1,8 @@
 version: 2.1
 
+# tailscale orb
+orbs:
+  tailscale: orbiously/tailscale@1.0.0
 # Define the jobs we want to run for this project
 jobs:
   deploy:
